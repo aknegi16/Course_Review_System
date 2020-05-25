@@ -1,4 +1,5 @@
 const bunyan = require('bunyan')
+const bunyantcp = require('bunyan-logstash-tcp');
 
 exports.loggerInstance = bunyan.createLogger({
     name: 'transaction-notifier',
@@ -14,7 +15,15 @@ exports.loggerInstance = bunyan.createLogger({
         },
         {
             stream: process.stdout
+        },
+        {
+
+            stream: bunyantcp.createStream({
+                host: '127.0.0.1',
+                port: 9000})
         }
+
+
     ]
 
 
