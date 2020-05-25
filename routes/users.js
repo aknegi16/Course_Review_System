@@ -93,7 +93,13 @@ router.post('/login', (req, res, next) => {
     successRedirect: '/dashboard',
     failureRedirect: '/users/login',
     failureFlash: true
-  })(req, res, next);
+  }
+  
+  
+  )(req, res, next);
+
+  var msg="user logged in "
+  logger.logResponse(req.user, req.user ,msg);
 });
 
 // Logout

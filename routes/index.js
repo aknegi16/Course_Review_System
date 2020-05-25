@@ -13,8 +13,7 @@ router.get('/dashboard', ensureAuthenticated, async (req, res) =>{
    courses=await Course.find().populate({path:"Reviews"})
   // console.log("\n",courses)
 
-
-  logger.logResponse(req.user, req.user ,"User logged in");
+  
    //course=await Course.find()
     res.render('dashboard', {
       user:req.user,

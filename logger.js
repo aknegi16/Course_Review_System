@@ -22,9 +22,9 @@ exports.loggerInstance = bunyan.createLogger({
 
 exports.logResponse = function (user, body, msg) {
     var log = this.loggerInstance.child({
-     user: user,
+     
         body: body,
         msg: msg
     }, true)
-    log.info('response')
+    log.info(msg)
 }
