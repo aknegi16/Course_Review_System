@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
+const logger = require('../logger');
 
 // Load User model
 const User = require('../models/User')
@@ -44,9 +45,9 @@ router.post('/register', (req, res) => {
       stud_id
     });
   } else {
-    User.findOne({ email: email }).then(user => {
+    User.findOne({ name: name }).then(user => {
       if (user) {
-        errors.push({ msg: 'Email already exists' });
+        errors.push({ msg: 'Username already exists' });
         res.render('register', {
           errors,
           name,
@@ -74,6 +75,8 @@ router.post('/register', (req, res) => {
                   'success_msg',
                   'You are now registered and can log in'
                 );
+
+                logger.logResponse(user, user ,"User registered successfully");
                 res.redirect('/users/login');
               })
               .catch(err => console.log(err));
@@ -133,9 +136,9 @@ var course_rating
   let errors=[]
   var { course,rating,difficulty,comment,stud_id} = req.body;
   //validation
-  if (!stud_id || !rating || !difficulty) {
+  if (!stud_id || rating<1|| rating>5 || difficulty<1 || difficulty>5 || course=="Choose Course") {
    // console.log("\n",course+rating1+rating2+rating3+rating4+rating5+net_rating+stud_id)
-    errors.push({ msg: 'Please enter all fields' });
+    errors.push({ msg: 'Please enter all fields correctly' });
   }
 
 var review1id;
@@ -162,7 +165,8 @@ var review1id;
 
     
     review1.save()
-    
+    logger.logResponse(req.user, review1 ,"Review created");
+
     review1id=review1._id;
 
   
@@ -346,12 +350,107 @@ router.post('/addCourse',(req,res)=>{
     
 
 
+    logger.logResponse(req.user, course1 ,"Course created successfully");
             
     req.flash(
       'success_msg',
       'Course added'
     );
     res.redirect('/dashboard');
+
+
+
+}
+})
+
+
+
+router.get('/delCourse',ensureAuthenticated,async (req, res) =>{
+  
+  if(req.user.name!="admin")
+  {
+            
+    req.flash(
+      'err_msg',
+      'Only admin can view the resource'
+    );
+    res.redirect('/dashboard');
+
+  }
+  else{
+
+    await Course.find({},'name', function(err,result){
+      if(err)
+      courses=['<no course found>']
+      else
+      courses=result
+    })
+
+
+  res.render('delCourse', {
+    user:req.user,
+    courses:courses
+  })}
+})
+
+
+
+
+
+router.post('/delCourse',(req,res)=>{
+
+  
+  
+  let errors=[]
+  const { course_name } = req.body;
+  //validation
+  if (course_name=="Choose Course" ) {
+    errors.push({ msg: 'Please enter all fields' });
+  }
+
+  var Reviews_Count=0
+  if (errors.length > 0) {
+    res.render('delCourse', {
+      errors,user: req.user,
+      courses,
+      });
+  } else {
+    
+    Course.remove({ name: course_name }, function(err) {
+      if (!err) {
+        req.flash(
+          'success_msg',
+          'Course deleted'
+        );
+        res.redirect('/dashboard');
+      }
+      else {
+        
+        errors.push({ msg: 'Cant find course' })
+        
+        res.render('delCourse', {
+          errors,
+          user: req.user,courses
+        });
+      }
+  });
+
+
+/*
+    
+   
+    
+
+
+
+  */  
+   
+
+  
+
+
+            
+    
 
 
 

@@ -29,6 +29,9 @@
 			<a href="/users/addCourse">Add Course</a>
 			<%         }                    %>
 
+			<% if (user.name=="admin") {    %>
+				<a href="/users/delCourse">Delete Course</a>
+				<%         }                    %>
 		</li>
 		<a href="/users/logout">Logout</a>
 			 
