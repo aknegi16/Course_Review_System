@@ -1,3 +1,4 @@
+const logger = require('../logger');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
 
@@ -19,6 +20,9 @@ module.exports = function(passport) {
         bcrypt.compare(password, user.password, (err, isMatch) => {
           if (err) throw err;
           if (isMatch) {
+
+            var msg="user logged in "
+  logger.logResponse(user, user ,msg);
             return done(null, user);
           } else {
             return done(null, false, { message: 'Password incorrect' });
