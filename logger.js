@@ -15,14 +15,7 @@ exports.loggerInstance = bunyan.createLogger({
         },
         {
             stream: process.stdout
-        },
-        {
-
-            stream: bunyantcp.createStream({
-                host: '127.0.0.1',
-                port: 9000})
         }
-
 
     ]
 
