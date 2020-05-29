@@ -16,6 +16,10 @@ exports.loggerInstance = bunyan.createLogger({
         {
             stream: process.stdout
         }
+        
+
+            
+           
 
     ]
 
